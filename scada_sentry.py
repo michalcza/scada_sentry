@@ -5,19 +5,29 @@ import RPi.GPIO as GPIO
 import smtplib
 import time
 ###################################
-#Check for voltage at GPIO pin 26
+#Check for voltage at GPIO pin 21
+
+pin = 11
 
 GPIO.setmode(GPIO.BOARD) 
-GPIO.setup(21, GPIO.IN)
+GPIO.setup(pin, GPIO.IN)
 
-input_value = GPIO.input(21)
+#*************************************************
+'''
+GPIO.setup(25, GPIO.IN)
+groundval = GPIO.input(25)
+GPIO.input(25)
+'''
+#*************************************************
 
-GPIO.input(21)
-print(GPIO.input(21))
+input_value = GPIO.input(pin)
+
+GPIO.input(pin)
+print(GPIO.input(pin))
 
 #**************************
-GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.add_event_detect(21, GPIO.FALLING)
+#GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+#GPIO.add_event_detect(pin, GPIO.FALLING)
 #******************************
 
 ###################################
@@ -48,30 +58,19 @@ class Emailer:
 sender = Emailer()
 ###############################################################
 
-#******************************************************8
-'''
+
 while True:
 
-    if GPIO.event_detected(21):
-        sendTo = 'seriousbritt@gmail.com'
-        emailSubject = "HELLO World"
-        emailContent = "Can you see me now??"
-        sender.sendmail(sendTo, emailSubject, emailContent)
-        print("Email Sent")
-        
-    time.sleep(0.1)
-'''
-    
-#********************************************************
-while True:
-
-    if GPIO.input(21) == 1:
+    if GPIO.input(pin) == 1:
         sendTo = 'seriousbritt@gmail.com'
         emailSubject = "HELLO World"
         emailContent = "Can you see me now???????????"
  #       sender.sendmail(sendTo, emailSubject, emailContent) 
         print("Email Sent")
-    else: 
+        print(GPIO.input(pin))
+ #
+ #print(GPIO.input(25))
+  #  else: 
         print("Not Sent")
         
-    time.sleep(1.1)
+    time.sleep(0.1)
