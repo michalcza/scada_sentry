@@ -1,4 +1,4 @@
-print("Hello World")
+
 
 #Import packages
 import RPi.GPIO as GPIO
@@ -6,6 +6,12 @@ import smtplib
 import time
 from datetime import datetime
 dateTimeObj = datetime.now()
+import logging
+logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s', filename='SCADA_REV13.log', level=logging.DEBUG)
+#logging.debug('Debug Event')
+logging.info('PROGRAM STARTED')
+#logging.warning('Warning Event')
+#print("ALARM NOTIFICATIONS STARTED",dateTimeObj)
 ###################################
 #Check for voltage at GPIO pin 11
 
@@ -20,7 +26,7 @@ GPIO.setup(pin, GPIO.IN)
 input_value = GPIO.input(pin)
 
 GPIO.input(pin)
-print(GPIO.input(pin))
+#print(GPIO.input(pin))
 
 #**************************
 #GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -55,7 +61,6 @@ class Emailer:
 sender = Emailer()
 ###############################################################
 
-
 while True:
 
     if GPIO.input(pin) == 1:
@@ -63,8 +68,10 @@ while True:
         emailSubject = "SCADA alarm"
         emailContent = "SCADA alarm dateTimeObj"
         sender.sendmail(sendTo, emailSubject, emailContent) 
-        print("Email Sent", dateTimeObj)
-        print(GPIO.input(pin))
+#       print("ALARM ON PIN NOTIFICATION SENT", dateTimeObj)
+#       logging.warning()
+#       print(GPIO.input(pin))
+        logging.info('MESSAGE SENT')
 
  #   else: 
  #       print("Not Sent")
