@@ -8,17 +8,20 @@ dateTimeObj = datetime.now()
 # Configure logging
 # TODO $filename.py = $filename.log
 import logging
-logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s', filename='REV14_SCADA.log', level=logging.DEBUG)
+logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s', filename='scada_sentry.log', level=logging.DEBUG)
 logging.info('PROGRAM STARTED')
 
 # Check for voltage at GPIO pin 11
+# Set pin 16 and 18 for relay signal
 pin = 11
 in1 = 16
 in2 = 18
-GPIO.setmode(GPIO.BOARD) 
+GPIO.setmode(GPIO.BOARD)
+GPIO.setwarnings(False) 
 GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.add_event_detect(pin, GPIO.FALLING)
 GPIO.setup(pin, GPIO.IN)
+
 input_value = GPIO.input(pin)
 GPIO.input(pin)
 GPIO.setup(in1, GPIO.OUT)
