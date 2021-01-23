@@ -4,21 +4,18 @@ print("Hello World")
 import RPi.GPIO as GPIO
 import smtplib
 import time
+from datetime import datetime
+dateTimeObj = datetime.now()
 ###################################
-#Check for voltage at GPIO pin 21
+#Check for voltage at GPIO pin 11
 
 pin = 11
-
 GPIO.setmode(GPIO.BOARD) 
-GPIO.setup(pin, GPIO.IN)
 
-#*************************************************
-'''
-GPIO.setup(25, GPIO.IN)
-groundval = GPIO.input(25)
-GPIO.input(25)
-'''
-#*************************************************
+GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.add_event_detect(pin, GPIO.FALLING)
+
+GPIO.setup(pin, GPIO.IN)
 
 input_value = GPIO.input(pin)
 
@@ -62,15 +59,14 @@ sender = Emailer()
 while True:
 
     if GPIO.input(pin) == 1:
-        sendTo = 'seriousbritt@gmail.com'
-        emailSubject = "HELLO World"
-        emailContent = "Can you see me now???????????"
- #       sender.sendmail(sendTo, emailSubject, emailContent) 
-        print("Email Sent")
+        sendTo = 'Dispatch@provopower.org'
+        emailSubject = "SCADA alarm"
+        emailContent = "SCADA alarm dateTimeObj"
+        sender.sendmail(sendTo, emailSubject, emailContent) 
+        print("Email Sent", dateTimeObj)
         print(GPIO.input(pin))
- #
- #print(GPIO.input(25))
-  #  else: 
-        print("Not Sent")
+
+ #   else: 
+ #       print("Not Sent")
         
-    time.sleep(0.1)
+    time.sleep(0.001)
