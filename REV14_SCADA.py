@@ -1,5 +1,3 @@
-
-
 #Import packages
 import RPi.GPIO as GPIO
 import smtplib
@@ -15,12 +13,21 @@ logging.info('PROGRAM STARTED')
 
 # Check for voltage at GPIO pin 11
 pin = 11
+in1 = 16
+in2 = 18
 GPIO.setmode(GPIO.BOARD) 
 GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.add_event_detect(pin, GPIO.FALLING)
 GPIO.setup(pin, GPIO.IN)
 input_value = GPIO.input(pin)
 GPIO.input(pin)
+GPIO.setup(in1, GPIO.OUT)
+GPIO.setup(in2, GPIO.OUT)
+GPIO.output(in1, True)
+GPIO.output(in2, True)
+time.sleep(1)
+GPIO.output(in1, False)
+GPIO.output(in2, False)
 
 # Send Email alert if voltage is present
 SMTP_SERVER = 'smtp.gmail.com' #Email server
@@ -49,14 +56,27 @@ class Emailer:
 sender = Emailer()
 
 # Main loop
-while True:
+try:
+    while True:
 
-    if GPIO.input(pin) == 1:
-        sendTo = 'Dispatch@provopower.org'
-        emailSubject = "SCADA alarm"
-        emailContent = "SCADA alarm dateTimeObj"
-        sender.sendmail(sendTo, emailSubject, emailContent) 
-        logging.info('MESSAGE SENT')
+        if GPIO.input(pin) == 1:
+            sendTo = 'Dispatch@provopower.org'
+            emailSubject = "SCADA alarm"
+            emailContent = "SCADA alarm dateTimeObj"
+            sender.sendmail(sendTo, emailSubject, emailContent) 
+            logging.info('MESSAGE SENT')
 
-    # Alarm signal goes high/low. Quick loop to catch signal when high.
-    time.sleep(0.001)
+            for x in range(15):
+                GPIO.output(in1, True)
+                time.sleep(0.5)
+                GPIO.output(in1, False)
+                GPIO.output(in2, True)
+                time.sleep(0.5)
+                GPIO.output(in2, False)
+		logging.info('LIGHTS BLINK')
+            
+
+        # Alarm signal goes high/low. Quick loop to catch signal when high.
+        time.sleep(0.001)
+except KeyboardInterrupt:
+    GPIO.cleanup()
