@@ -2,6 +2,7 @@
 import RPi.GPIO as GPIO
 import smtplib
 import time
+import os
 from datetime import datetime
 dateTimeObj = datetime.now()
 
@@ -35,8 +36,8 @@ GPIO.output(in2, False)
 # Send Email alert if voltage is present
 SMTP_SERVER = 'smtp.gmail.com' #Email server
 SMTP_PORT = 587 #Server Port
-GMAIL_USERNAME = 'sendalert90@gmail.com'
-GMAIL_PASSWORD = 'Dispatch'
+GMAIL_USERNAME = os.environ.get('SCADA_sentry_username')
+GMAIL_PASSWORD = os.environ.get('SCADA_sentry_password')
 
 class Emailer:
     def sendmail(self, recipient, subject, content):
@@ -83,3 +84,7 @@ try:
         time.sleep(0.001)
 except KeyboardInterrupt:
     GPIO.cleanup()
+
+
+user_name = os.environ.get('SCADA_sentry_username')
+password = os.environ.get('SCADA_sentry_password')
